@@ -1,0 +1,16 @@
+# Only the reviewed skill package and repository instructions are publishable.
+/*
+!/.gitignore
+!/README.md
+!/anki-card-organizer/
+/anki-card-organizer/*
+!/anki-card-organizer/SKILL.md
+!/anki-card-organizer/references/
+!/anki-card-organizer/scripts/
+!/anki-card-organizer/tests/
+/anki-card-organizer/references/*
+!/anki-card-organizer/references/ankiconnect.md
+/anki-card-organizer/scripts/*
+!/anki-card-organizer/scripts/anki_connect.py
+/anki-card-organizer/tests/*
+!/anki-card-organizer/tests/test_anki_connect.py
