@@ -4,8 +4,9 @@ Turn language materials into concise Anki study cards and import them through lo
 
 ## Features
 
-- Source titles, original-text bullet points, Chinese meanings, and essential explanations; indented B2–C1 vocabulary notes include parts of speech, plural forms, and common collocations.
+- Source titles, original text, Chinese meanings, and essential explanations; indented B2–C1 vocabulary notes include parts of speech, plural forms, and common collocations.
 - Expression-comparison cards put each expression in its own left-aligned bullet on the front, with indented explanations of grammar, usage, and meaning on the back. Titles retain their alignment; all body content is left-aligned.
+- Source-based language cards keep only the title and original text on the front; Chinese meanings, vocabulary, and explanations go on the back. An empty back is reserved for material with no separate original passage or example sentence that consists solely of standalone knowledge points.
 - Approximately 4–6 source points per card, adjusted for vocabulary density; longer materials are split across cards.
 - Direct addition for this user's card-making requests under their explicit standing permission, without repeated confirmation prompts; established deck/language-tag defaults apply. Preview-only requests are respected.
 - Checks of the active profile, note type, fields, and templates; a confirmation hash binds the batch content and settings.
