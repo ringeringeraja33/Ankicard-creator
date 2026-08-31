@@ -1,6 +1,6 @@
 ---
 name: anki-card-organizer
-description: Organize language materials into Anki study cards. For direct import, use local AnkiConnect to add and verify notes after confirming the deck, tagging rules, and front/back content for each batch. Use for Anki card preparation and import; do not trigger automatically for ordinary translation or language questions.
+description: Organize language materials into Anki study cards, including expression-comparison cards. For direct import, use local AnkiConnect to add and verify notes after confirming the deck, tagging rules, and front/back content for each batch. Use for Anki card preparation and import; do not trigger automatically for ordinary translation or language questions.
 ---
 
 # Anki Card Organizer
@@ -9,14 +9,16 @@ Currently supports language study cards. Handle other card types according to th
 
 ## Working Modes
 
-- Prepare only: produce a copyable card front using the format below, without connecting to or modifying Anki.
+- Prepare only: produce copyable card content in the selected format below, without connecting to or modifying Anki. Expression-comparison cards include both a front and a back.
 - Direct import: first read the entire [AnkiConnect workflow](references/ankiconnect.md), then use the bundled `scripts/anki_connect.py`. If connection fails, explain the cause and retain the preview. Do not install add-ons, modify the database, or claim that import succeeded.
 - For every import batch, ask for and confirm the target deck, tagging rules and actual tags, and exact front/back content. Do not reuse authorization from a previous batch. Settings already supplied for the current batch can be included in the confirmation summary without asking for each one again.
-- Language study cards default to a source title and bullet points on the front, with an empty back; confirmation is still required. Keep import settings, tags, and result reports separate from card content.
+- General language study cards default to a source title and bullet points on the front, with an empty back; expression-comparison cards use the dedicated format below. Confirmation is still required. Keep import settings, tags, and result reports separate from card content.
 - Show previews of every card in the batch, the note type, field mapping, and expected card count. Add notes only after user confirmation. Any change to content, settings, or templates requires a new preview and confirmation.
 - Do not implicitly create decks or note types, overwrite or delete existing notes, change review progress, or automatically sync AnkiWeb.
 
 ## Language Study Cards
+
+These are the shared language-study rules. For expression-comparison cards, replace only the front/back layout with the dedicated format below; retain the other applicable rules.
 
 ### Output Format
 
@@ -57,3 +59,12 @@ French Expressions (Original Examples)
 ### Delivery Checks
 
 Check the source title, original order, Chinese meanings, vocabulary coverage, indentation on the next line, and card length. Verify that all non-title content is left-aligned and the title's alignment is unchanged. Deliver in the conversation by default; writing files or importing into Anki requires an explicit user request. When generating files, explicitly save as UTF-8 and perform strict readback checks for Chinese text, accented characters, and replacement characters.
+
+## Expression-Comparison Cards
+
+- Use this format when the user asks for a comparison/discrimination card (辨析卡片). Keep the shared rules for source/topic titles, language, vocabulary coverage, length, left alignment, and import confirmation unless the current request overrides them.
+- Front: preserve the expressions supplied by the user, in their original order, with one expression per separate line, all left-aligned. Do not use a comparison table, bullet markers, translations, corrections, or answer hints on the expression lines. Keep the title separate and preserve its alignment.
+- Back: explain the comparison in Chinese using left-aligned bullet points. Use indented child bullets to show the reasoning: a judgment about an expression, then its grammatical/semantic/contextual reason and a suitable correction or example. Indentation must represent logical dependence, not decoration.
+- Explain specifically why an expression works better in the intended context or what is problematic about another one. Distinguish grammatical errors, awkward usage, and differences in meaning or register. Do not label an acceptable expression wrong or declare one universally better when context determines the choice.
+- Check that any rewrite preserves the intended tense, focus, and meaning. If it changes them, state the difference and give a closer rewrite where useful. Keep a coherent comparison together on one card when practical; do not add unrelated vocabulary explanations merely to fill space.
+- For direct import, render the front as a structured side with `title` and `lines`; render the back with `title`, `items`, and indented `children`. See the [batch format](references/ankiconnect.md#batch-format). In the conversation, label the two sides outside their content.

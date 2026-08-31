@@ -37,6 +37,8 @@ All values below are original examples. Replace the deck, note type, fields, and
 
 The renderer explicitly left-aligns all non-title content on either side, including plain-text paragraphs, top-level bullets, and nested vocabulary notes, while preserving list indentation. Structured `title` content keeps the note template's existing alignment; use the structured format when a title needs separate alignment. Empty strings remain empty fields. Alignment is stored in each field's HTML without changing shared templates or existing notes.
 
+Expression-comparison fronts use `{"title": "Comparison topic", "lines": ["First expression.", "Second expression."]}`. Each string becomes its own left-aligned block without a bullet marker; the title remains separate. A structured side must contain exactly one of `lines` or `items`, and that array must not be empty. For comparison backs, use `items` for the judgments and `children` for the supporting reasons, corrections, and examples; do not leave the back empty. All strings are still escaped as text, not interpreted as HTML or Markdown.
+
 ```json
 {
   "profile": "Actual Profile Name",

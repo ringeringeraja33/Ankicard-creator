@@ -82,8 +82,16 @@ def render(value):
     if isinstance(value, str):
         content = escape(text(value, "side", empty=True))
         return '<div style="text-align: left;">' + content + '</div>' if content.strip() else content
-    keys(value, ("title", "items"))
+    keys(value, ("title",), ("items", "lines"))
+    if ("items" in value) == ("lines" in value):
+        raise SafeError("A structured side requires exactly one of items or lines.")
     title = text(value["title"], "title")
+    if "lines" in value:
+        if not isinstance(value["lines"], list) or not value["lines"]:
+            raise SafeError("A structured side requires a nonempty lines array.")
+        lines = "".join('<div style="text-align: left;">' + escape(text(line, "line")) + '</div>'
+                        for line in value["lines"])
+        return '<div class="anki-title">' + escape(title) + '</div>' + lines
     if not isinstance(value["items"], list) or not value["items"]:
         raise SafeError("A structured side requires a nonempty items array.")
     items = []
