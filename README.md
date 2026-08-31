@@ -1,13 +1,13 @@
 # Anki Card Organizer
 
-Turn language materials into concise Anki study cards and import them through local AnkiConnect after confirming each batch.
+Turn language materials into concise Anki study cards and import them through local AnkiConnect under the user's authorization.
 
 ## Features
 
 - Source titles, original-text bullet points, Chinese meanings, and essential explanations; indented B2–C1 vocabulary notes include parts of speech, plural forms, and common collocations.
 - Expression-comparison cards put each expression in its own left-aligned bullet on the front, with indented explanations of grammar, usage, and meaning on the back. Titles retain their alignment; all body content is left-aligned.
 - Approximately 4–6 source points per card, adjusted for vocabulary density; longer materials are split across cards.
-- Confirmation of the deck, tagging rules, and front/back content for every batch, with a complete preview before import.
+- Direct addition for this user's card-making requests under their explicit standing permission, without repeated confirmation prompts; established deck/language-tag defaults apply. Preview-only requests are respected.
 - Checks of the active profile, note type, fields, and templates; a confirmation hash binds the batch content and settings.
 - Duplicate preflight checks using Anki's first-field rule, individual note creation, and readback verification of fields, tags, decks, and card counts.
 - Local receipts track partial success and unknown outcomes without automatically retrying uncertain writes. Existing notes are never overwritten, and AnkiWeb sync is never automatic.
@@ -22,7 +22,9 @@ See the [AnkiConnect workflow](anki-card-organizer/references/ankiconnect.md) fo
 
 ## Usage
 
-Ask your agent: "Organize these materials into language study cards and add them to Anki. First ask me about the deck, tagging rules, and front/back content."
+Ask your agent: "Organize these materials into language study cards and add them to Anki using my deck and language-tag defaults."
+
+This user's saved preference authorizes direct additions for future card-making requests without asking again. It does not authorize writes for another user who copies the skill. Say "preview only" when you want card text without importing.
 
 Run a read-only connection check or the tests from the repository root:
 
@@ -31,7 +33,7 @@ python -X utf8 anki-card-organizer/scripts/anki_connect.py inspect
 python -X utf8 -m unittest discover -s anki-card-organizer/tests -v
 ```
 
-The confirmation hash prevents changes after preview. The agent must obtain the user's authorization in the conversation; the hash itself does not grant permission.
+The confirmation hash prevents changes after the internal preview. Explicit standing permission can authorize subsequent card-making batches, so no fresh yes/no prompt is needed within that scope; the hash itself does not grant permission. Profile checks, duplicate checks, receipts, readback verification, and the ban on blindly retrying unknown writes remain in place.
 
 ## Scope and Privacy
 

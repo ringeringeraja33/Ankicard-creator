@@ -218,7 +218,7 @@ def verify(client, note_id, expected):
 def import_batch(client, path, approved, receipt_dir=None):
     prepared = preview(client, path)
     if not approved or approved != prepared["review_sha256"]:
-        raise SafeError("Confirmation hash missing or changed. Preview and obtain fresh user approval.")
+        raise SafeError("Confirmation hash missing or changed. Review the current batch and use its matching preview hash.")
     review = prepared["confirmation"]
     notes = review["notes"]
     folder = Path(receipt_dir) if receipt_dir else Path.home() / ".anki-card-organizer" / "receipts"
