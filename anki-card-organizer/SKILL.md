@@ -16,6 +16,12 @@ Currently supports language study cards. Handle other card types according to th
 - Show previews of every card in the batch, the note type, field mapping, and expected card count. Add notes only after user confirmation. Any change to content, settings, or templates requires a new preview and confirmation.
 - Do not implicitly create decks or note types, overwrite or delete existing notes, change review progress, or automatically sync AnkiWeb.
 
+### Deck and Language-Tag Defaults
+
+- Put cards in `Expressions` unless their purpose is to teach a general grammar rule. Reserve `Grammar` for general grammar explanations; grammar comments used to explain a specific expression or comparison do not by themselves make it a grammar card.
+- Tag cards by the language being studied, not by the language of the explanations. Use `words` for English. For other languages, reuse the user's established language tag after checking existing notes/tags; ask only if the mapping is unknown or ambiguous. Do not invent a new tag or silently omit the language tag.
+- Apply these defaults to the current batch summary instead of asking the user to repeat established preferences. Keep confirmation of the actual card content and import; do not ask again for settings or content already confirmed for this same batch. Explicit user instructions for the batch override these defaults.
+
 ## Language Study Cards
 
 These are the shared language-study rules. For expression-comparison cards, replace only the front/back layout with the dedicated format below; retain the other applicable rules.
@@ -63,8 +69,8 @@ Check the source title, original order, Chinese meanings, vocabulary coverage, i
 ## Expression-Comparison Cards
 
 - Use this format when the user asks for a comparison/discrimination card (辨析卡片). Keep the shared rules for source/topic titles, language, vocabulary coverage, length, left alignment, and import confirmation unless the current request overrides them.
-- Front: preserve the expressions supplied by the user, in their original order, with one expression per separate line, all left-aligned. Do not use a comparison table, bullet markers, translations, corrections, or answer hints on the expression lines. Keep the title separate and preserve its alignment.
+- Front: preserve the expressions supplied by the user, in their original order, with one expression per left-aligned bullet on its own line (two bullets when comparing two expressions). Do not use a comparison table, translations, corrections, or answer hints on the expression lines. Keep any title separate and preserve its alignment.
 - Back: explain the comparison in Chinese using left-aligned bullet points. Use indented child bullets to show the reasoning: a judgment about an expression, then its grammatical/semantic/contextual reason and a suitable correction or example. Indentation must represent logical dependence, not decoration.
 - Explain specifically why an expression works better in the intended context or what is problematic about another one. Distinguish grammatical errors, awkward usage, and differences in meaning or register. Do not label an acceptable expression wrong or declare one universally better when context determines the choice.
 - Check that any rewrite preserves the intended tense, focus, and meaning. If it changes them, state the difference and give a closer rewrite where useful. Keep a coherent comparison together on one card when practical; do not add unrelated vocabulary explanations merely to fill space.
-- For direct import, render the front as a structured side with `title` and `lines`; render the back with `title`, `items`, and indented `children`. See the [batch format](references/ankiconnect.md#batch-format). In the conversation, label the two sides outside their content.
+- For direct import, render both sides with `title` and `items`: front items contain the expressions without child explanations, while back items use indented `children` for reasoning. Use an empty `title` when the confirmed preview has no heading. See the [batch format](references/ankiconnect.md#batch-format). In the conversation, label the two sides outside their content.

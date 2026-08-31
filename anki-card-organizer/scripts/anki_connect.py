@@ -85,13 +85,14 @@ def render(value):
     keys(value, ("title",), ("items", "lines"))
     if ("items" in value) == ("lines" in value):
         raise SafeError("A structured side requires exactly one of items or lines.")
-    title = text(value["title"], "title")
+    title = text(value["title"], "title", empty=True)
     if "lines" in value:
         if not isinstance(value["lines"], list) or not value["lines"]:
             raise SafeError("A structured side requires a nonempty lines array.")
         lines = "".join('<div style="text-align: left;">' + escape(text(line, "line")) + '</div>'
                         for line in value["lines"])
-        return '<div class="anki-title">' + escape(title) + '</div>' + lines
+        heading = '<div class="anki-title">' + escape(title) + '</div>' if title.strip() else ''
+        return heading + lines
     if not isinstance(value["items"], list) or not value["items"]:
         raise SafeError("A structured side requires a nonempty items array.")
     items = []
@@ -106,7 +107,8 @@ def render(value):
         items.append(item_start + escape(text(item["text"], "item"))
                      + (list_start + nested + "</ul>" if nested else "") + "</li>")
     # Keep the title outside the left-aligned body so its template alignment is preserved.
-    return "<div>" + escape(title) + "</div>" + list_start + "".join(items) + "</ul>"
+    heading = "<div>" + escape(title) + "</div>" if title.strip() else ''
+    return heading + list_start + "".join(items) + "</ul>"
 
 
 def load_batch(path):

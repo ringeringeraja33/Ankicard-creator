@@ -5,7 +5,7 @@ Turn language materials into concise Anki study cards and import them through lo
 ## Features
 
 - Source titles, original-text bullet points, Chinese meanings, and essential explanations; indented B2–C1 vocabulary notes include parts of speech, plural forms, and common collocations.
-- Expression-comparison cards put each expression on its own left-aligned front line, with indented explanations of grammar, usage, and meaning on the back. Titles retain their alignment; all body content is left-aligned.
+- Expression-comparison cards put each expression in its own left-aligned bullet on the front, with indented explanations of grammar, usage, and meaning on the back. Titles retain their alignment; all body content is left-aligned.
 - Approximately 4–6 source points per card, adjusted for vocabulary density; longer materials are split across cards.
 - Confirmation of the deck, tagging rules, and front/back content for every batch, with a complete preview before import.
 - Checks of the active profile, note type, fields, and templates; a confirmation hash binds the batch content and settings.
