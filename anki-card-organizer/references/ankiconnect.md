@@ -35,6 +35,8 @@ The script does not install AnkiConnect, start Anki, or access the collection da
 
 All values below are original examples. Replace the deck, note type, fields, and tags with the values confirmed for this batch. Both `front` and `back` must be explicitly present in each note; use an empty string for a blank back. Object content uses `title` and `items`, with a `children` array of strings for nested vocabulary notes. String content preserves line breaks as plain text. Do not expect Markdown or HTML inside strings to be interpreted. Chinese meanings in the example are study content.
 
+The renderer explicitly left-aligns all non-title content on either side, including plain-text paragraphs, top-level bullets, and nested vocabulary notes, while preserving list indentation. Structured `title` content keeps the note template's existing alignment; use the structured format when a title needs separate alignment. Empty strings remain empty fields. Alignment is stored in each field's HTML without changing shared templates or existing notes.
+
 ```json
 {
   "profile": "Actual Profile Name",

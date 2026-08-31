@@ -80,21 +80,25 @@ def escape(value):
 
 def render(value):
     if isinstance(value, str):
-        return escape(text(value, "side", empty=True))
+        content = escape(text(value, "side", empty=True))
+        return '<div style="text-align: left;">' + content + '</div>' if content.strip() else content
     keys(value, ("title", "items"))
     title = text(value["title"], "title")
     if not isinstance(value["items"], list) or not value["items"]:
         raise SafeError("A structured side requires a nonempty items array.")
     items = []
+    list_start = '<ul style="text-align: left;">'
+    item_start = '<li style="text-align: left;">'
     for item in value["items"]:
         keys(item, ("text",), ("children",))
         children = item.get("children", [])
         if not isinstance(children, list):
             raise SafeError("children must be an array of text.")
-        nested = "".join("<li>" + escape(text(child, "child")) + "</li>" for child in children)
-        items.append("<li>" + escape(text(item["text"], "item"))
-                     + ("<ul>" + nested + "</ul>" if nested else "") + "</li>")
-    return "<div>" + escape(title) + "</div><ul>" + "".join(items) + "</ul>"
+        nested = "".join(item_start + escape(text(child, "child")) + "</li>" for child in children)
+        items.append(item_start + escape(text(item["text"], "item"))
+                     + (list_start + nested + "</ul>" if nested else "") + "</li>")
+    # Keep the title outside the left-aligned body so its template alignment is preserved.
+    return "<div>" + escape(title) + "</div>" + list_start + "".join(items) + "</ul>"
 
 
 def load_batch(path):

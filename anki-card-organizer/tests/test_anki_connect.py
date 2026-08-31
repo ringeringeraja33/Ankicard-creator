@@ -131,7 +131,8 @@ class IntegrationTests(unittest.TestCase):
     def test_preview_read_only_and_success_unicode_and_resume(self):
         review = ac.preview(self.client, self.path)
         self.assertNotIn("addNote", self.fake.actions)
-        self.assertIn("<ul><li>动词", review["confirmation"]["notes"][0]["fields"]["正面"])
+        self.assertIn('<ul style="text-align: left;"><li style="text-align: left;">动词',
+                      review["confirmation"]["notes"][0]["fields"]["正面"])
         result = self.run_import(review["review_sha256"])
         self.assertEqual(result["new_notes"], 1)
         self.assertEqual(result["verified_cards"], 1)
@@ -233,7 +234,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_markup_is_escaped_and_not_executed(self):
         self.assertEqual(ac.render('<script>alert("x")</script>'),
-                         '&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;')
+                         '<div style="text-align: left;">&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;</div>')
 
     def test_replacement_characters_rejected(self):
         self.data["notes"][0]["back"] = "??"
