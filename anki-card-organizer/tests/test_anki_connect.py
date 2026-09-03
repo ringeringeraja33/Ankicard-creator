@@ -111,7 +111,10 @@ class IntegrationTests(unittest.TestCase):
         self.data = {"profile": "测试档案", "deck": "语言::法语", "model": "基础", "front_field": "正面",
                      "back_field": "背面", "tag_rule": "按语言分类", "tags": ["lang::fr"],
                      "notes": [{"front": {"title": "原创练习 éèà", "items": [
-                         {"text": "stimuler：激发", "children": ["动词；搭配：stimuler l’imagination（激发想象力）"]}]},
+                         {"parts": [{"text": "stimuler：激发", "bold": True}], "children": [
+                             {"parts": [{"text": "动词；搭配："},
+                                        {"text": "stimuler l’imagination", "red": True},
+                                        {"text": "（激发想象力）"}]}]}]},
                                 "back": ""}]}
         self.write_batch()
 
@@ -131,7 +134,9 @@ class IntegrationTests(unittest.TestCase):
     def test_preview_read_only_and_success_unicode_and_resume(self):
         review = ac.preview(self.client, self.path)
         self.assertNotIn("addNote", self.fake.actions)
-        self.assertIn('<ul style="text-align: left;"><li style="text-align: left;">动词',
+        self.assertIn('<strong>stimuler：激发</strong>',
+                      review["confirmation"]["notes"][0]["fields"]["正面"])
+        self.assertIn('<span style="color: red;">stimuler l’imagination</span>',
                       review["confirmation"]["notes"][0]["fields"]["正面"])
         result = self.run_import(review["review_sha256"])
         self.assertEqual(result["new_notes"], 1)
@@ -235,6 +240,19 @@ class IntegrationTests(unittest.TestCase):
     def test_markup_is_escaped_and_not_executed(self):
         self.assertEqual(ac.render('<script>alert("x")</script>'),
                          '<div style="text-align: left;">&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;</div>')
+        rendered = ac.render({"title": "", "lines": [{"parts": [
+            {"text": '<script>alert("styled")</script>', "bold": True, "red": True}]}]})
+        self.assertNotIn("<script>", rendered)
+        self.assertIn('<strong><span style="color: red;">&lt;script&gt;', rendered)
+
+    def test_invalid_rich_text_is_rejected(self):
+        plain = ac.render({"title": "", "items": [{"text": "plain", "children": ["child"]}]})
+        self.assertIn('<li style="text-align: left;">plain', plain)
+        self.assertIn('<li style="text-align: left;">child</li>', plain)
+        with self.assertRaisesRegex(ac.SafeError, "exactly one"):
+            ac.render({"title": "", "items": [{"text": "plain", "parts": [{"text": "rich"}]}]})
+        with self.assertRaisesRegex(ac.SafeError, "red must be"):
+            ac.render({"title": "", "items": [{"parts": [{"text": "rich", "red": "yes"}]}]})
 
     def test_replacement_characters_rejected(self):
         self.data["notes"][0]["back"] = "??"

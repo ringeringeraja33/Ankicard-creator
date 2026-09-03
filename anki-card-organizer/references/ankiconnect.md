@@ -33,11 +33,18 @@ The script does not install AnkiConnect, start Anki, or access the collection da
 
 ## Batch Format
 
-All values below are original examples. Replace the deck, note type, fields, and tags with the values resolved from the user's request/preferences and current Anki data. Both `front` and `back` must be explicitly present in each note. For source-based language material, keep only the title and original text on the front, and put Chinese meanings and explanations on the back. Use an empty back only for material that contains no separate original passage or example sentence and consists solely of standalone knowledge points. Object content uses `title` and `items`, with a `children` array of strings for nested vocabulary notes. String content preserves line breaks as plain text. Do not expect Markdown or HTML inside strings to be interpreted. Chinese meanings in the example are study content.
+All values below are original examples. Replace the deck, note type, fields, and tags with the values resolved from the user's request/preferences and current Anki data. Both `front` and `back` must be explicitly present in each note. For source-based language material, keep only the title and original text on the front, and put Chinese meanings and explanations on the back. Use an empty back only for material that contains no separate original passage or example sentence and consists solely of standalone knowledge points. Object content uses `title` with either `items` or `lines`; `children` provides nested notes. Plain strings preserve line breaks as text. Do not expect Markdown or HTML inside strings to be interpreted. Chinese meanings in the example are study content.
 
 The renderer explicitly left-aligns all non-title content on either side, including plain-text paragraphs, top-level bullets, and nested vocabulary notes, while preserving list indentation. Structured `title` content keeps the note template's existing alignment; use the structured format when a title needs separate alignment. Empty strings remain empty fields. Alignment is stored in each field's HTML without changing shared templates or existing notes.
 
-Expression-comparison fronts use `{"title": "Comparison topic", "items": [{"text": "First expression."}, {"text": "Second expression."}]}`. Each expression becomes its own left-aligned bullet, without child explanations on the front; the title remains separate. For comparison backs, use `items` for the judgments and `children` for the supporting reasons, corrections, and examples; do not leave the back empty. For ordinary source paragraphs, use the `lines` array on the front to preserve the original paragraph structure without adding bullets; use `items` on the back for meanings with indented explanations. A structured side must contain exactly one of `lines` or `items`, and that array must not be empty. All strings are still escaped as text, not interpreted as HTML or Markdown.
+Expression-comparison fronts use `{"title": "Comparison topic", "items": [{"text": "First expression."}, {"text": "Second expression."}]}`. Each expression becomes its own left-aligned bullet, without child explanations on the front; the title remains separate. For comparison backs, use `items` for the judgments and `children` for the supporting reasons, corrections, and examples; do not leave the back empty. For ordinary source paragraphs, use the `lines` array on the front to preserve the original paragraph structure without adding bullets; use `items` on the back for meanings with indented explanations. A structured side must contain exactly one of `lines` or `items`, and that array must not be empty.
+
+For the user's standing visual preference, fixed expressions and reusable structures are red, and the key point in each explanatory bullet is bold. Use structured parts so the renderer creates only known-safe HTML:
+
+- An item contains exactly one of `"text": "plain text"` or `"parts": [...]`, plus optional `children`.
+- A line or child is either a plain string or `{"parts": [...]}`.
+- Each part contains `text` plus optional Boolean `red` and `bold` flags, for example `{"text": "stimuler l’imagination", "red": true}` or `{"text": "核心判断", "bold": true}`. Both flags may be true on the same part.
+- Color only the exact fixed expression or structure. Bold the concise learning point, not all supporting detail. Titles remain unstyled. Part text is escaped exactly like plain text; raw HTML and Markdown are never interpreted.
 
 If the intended card has no title, use `"title": ""` to omit the heading without adding extra text. This works with either `lines` or `items`; it does not make an empty body valid.
 
@@ -54,14 +61,32 @@ If the intended card has no title, use `"title": ""` to omit the heading without
     {
       "front": {
         "title": "French Expressions (Original Example)",
-        "lines": ["Cette lecture stimule l’imagination."]
+        "lines": [
+          {
+            "parts": [
+              {"text": "Cette lecture "},
+              {"text": "stimule l’imagination", "red": true},
+              {"text": "."}
+            ]
+          }
+        ]
       },
       "back": {
         "title": "",
         "items": [
           {
-            "text": "这次阅读激发想象力。",
-            "children": ["stimuler｜及物动词；复数不适用｜激发；搭配：stimuler l’imagination（激发想象力）。"]
+            "parts": [
+              {"text": "这次阅读将激发你的想象力。", "bold": true}
+            ],
+            "children": [
+              {
+                "parts": [
+                  {"text": "stimuler｜及物动词；复数不适用｜激发；搭配："},
+                  {"text": "stimuler l’imagination", "red": true},
+                  {"text": "（激发想象力）。"}
+                ]
+              }
+            ]
           }
         ]
       }

@@ -78,6 +78,31 @@ def escape(value):
     return html.escape(value, quote=True).replace("\n", "<br>")
 
 
+def render_parts(value, label):
+    if not isinstance(value, list) or not value:
+        raise SafeError(f"{label}: parts must be a nonempty array.")
+    output = []
+    for part in value:
+        keys(part, ("text",), ("bold", "red"))
+        content = escape(text(part["text"], f"{label} part"))
+        for style in ("bold", "red"):
+            if style in part and not isinstance(part[style], bool):
+                raise SafeError(f"{label} part: {style} must be true or false.")
+        if part.get("red"):
+            content = '<span style="color: red;">' + content + "</span>"
+        if part.get("bold"):
+            content = "<strong>" + content + "</strong>"
+        output.append(content)
+    return "".join(output)
+
+
+def render_inline(value, label):
+    if isinstance(value, str):
+        return escape(text(value, label))
+    keys(value, ("parts",))
+    return render_parts(value["parts"], label)
+
+
 def render(value):
     if isinstance(value, str):
         content = escape(text(value, "side", empty=True))
@@ -89,7 +114,7 @@ def render(value):
     if "lines" in value:
         if not isinstance(value["lines"], list) or not value["lines"]:
             raise SafeError("A structured side requires a nonempty lines array.")
-        lines = "".join('<div style="text-align: left;">' + escape(text(line, "line")) + '</div>'
+        lines = "".join('<div style="text-align: left;">' + render_inline(line, "line") + '</div>'
                         for line in value["lines"])
         heading = '<div class="anki-title">' + escape(title) + '</div>' if title.strip() else ''
         return heading + lines
@@ -99,12 +124,16 @@ def render(value):
     list_start = '<ul style="text-align: left;">'
     item_start = '<li style="text-align: left;">'
     for item in value["items"]:
-        keys(item, ("text",), ("children",))
+        keys(item, (), ("text", "parts", "children"))
+        if ("text" in item) == ("parts" in item):
+            raise SafeError("Each item requires exactly one of text or parts.")
         children = item.get("children", [])
         if not isinstance(children, list):
-            raise SafeError("children must be an array of text.")
-        nested = "".join(item_start + escape(text(child, "child")) + "</li>" for child in children)
-        items.append(item_start + escape(text(item["text"], "item"))
+            raise SafeError("children must be an array.")
+        nested = "".join(item_start + render_inline(child, "child") + "</li>" for child in children)
+        body = (escape(text(item["text"], "item")) if "text" in item
+                else render_parts(item["parts"], "item"))
+        items.append(item_start + body
                      + (list_start + nested + "</ul>" if nested else "") + "</li>")
     # Keep the title outside the left-aligned body so its template alignment is preserved.
     heading = "<div>" + escape(title) + "</div>" if title.strip() else ''
